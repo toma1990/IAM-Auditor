@@ -1,0 +1,16 @@
+{
+    "AuditDate": "2026-09-22 20:20:09",
+    "TotalUsers": 1,
+    "TotalIssues": 1,
+    "Findings": [
+        {
+            "User": "test-user-1",
+            "MFA": false,
+            "AdminAccess": false,
+            "AccessKeys": [],
+            "Issues": [
+                "No MFA enabled"
+            ]
+        }
+    ]
+}
