@@ -33,5 +33,5 @@ python3 iam_auditor.py
 
 ## What's next
 
--Planning to add checks for unused IAM roles, overly permissive 
--S3 bucket policies, and export to HTML report format.
+- Planning to add checks for unused IAM roles, overly permissive 
+- S3 bucket policies, and export to HTML report format.
