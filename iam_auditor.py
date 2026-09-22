@@ -111,6 +111,59 @@ def generate_report(findings):
             for issue in finding['Issues']:
                 print(f"    - {issue}")
 
+def generate_html_report(findings):
+    # HTML report so results are readable without opening a JSON file
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    filename = f"iam_audit_{timestamp}.html"
+    
+    total_issues = sum(len(f['Issues']) for f in findings)
+    
+    html = f"""
+<html>
+<head>
+    <title>IAM Audit Report</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 40px; }}
+        h1 {{ color: #232f3e; }}
+        .summary {{ background: #f0f0f0; padding: 15px; border-radius: 5px; }}
+        .user {{ border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 5px; }}
+        .issue {{ color: #d13212; font-weight: bold; }}
+        .clean {{ color: #1d8348; }}
+    </style>
+</head>
+<body>
+    <h1>IAM Security Audit Report</h1>
+    <div class="summary">
+        <p>Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        <p>Users checked: {len(findings)}</p>
+        <p>Total issues found: {total_issues}</p>
+    </div>
+"""
+    
+    for finding in findings:
+        status = "issue" if finding['Issues'] else "clean"
+        html += f"""
+    <div class="user">
+        <h3>{finding['User']}</h3>
+        <p>MFA Enabled: {finding['MFA']}</p>
+        <p>Admin Access: {finding['AdminAccess']}</p>
+"""
+        if finding['Issues']:
+            for issue in finding['Issues']:
+                html += f'<p class="issue">ISSUE: {issue}</p>\n'
+        else:
+            html += '<p class="clean">PASS: No issues found</p>\n'
+        
+        html += "</div>\n"
+    
+    html += "</body></html>"
+    
+    with open(filename, 'w') as f:
+        f.write(html)
+    
+    print(f"HTML report saved to: {filename}")
+
 if __name__ == "__main__":
     findings = audit_users()
     generate_report(findings)
+    generate_html_report(findings)
