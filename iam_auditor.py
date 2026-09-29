@@ -111,13 +111,13 @@ def generate_report(findings):
             for issue in finding['Issues']:
                 print(f"    - {issue}")
 
-def generate_html_report(findings):
+def generate_html_report(findings, ai_advice=""):
     # HTML report so results are readable without opening a JSON file
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     filename = f"iam_audit_{timestamp}.html"
-    
+
     total_issues = sum(len(f['Issues']) for f in findings)
-    
+
     html = f"""
 <html>
 <head>
@@ -129,6 +129,7 @@ def generate_html_report(findings):
         .user {{ border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 5px; }}
         .issue {{ color: #d13212; font-weight: bold; }}
         .clean {{ color: #1d8348; }}
+        .ai-box {{ background: #eaf4fb; border-left: 4px solid #2874a6; padding: 15px; margin-top: 20px; }}
     </style>
 </head>
 <body>
@@ -139,9 +140,8 @@ def generate_html_report(findings):
         <p>Total issues found: {total_issues}</p>
     </div>
 """
-    
+
     for finding in findings:
-        status = "issue" if finding['Issues'] else "clean"
         html += f"""
     <div class="user">
         <h3>{finding['User']}</h3>
@@ -153,17 +153,63 @@ def generate_html_report(findings):
                 html += f'<p class="issue">ISSUE: {issue}</p>\n'
         else:
             html += '<p class="clean">PASS: No issues found</p>\n'
-        
+
         html += "</div>\n"
-    
+
+    if ai_advice:
+        html += f"""
+    <div class="ai-box">
+        <h2>AI Remediation Advice</h2>
+        <div>{ai_advice}</div>
+    </div>
+"""
+
     html += "</body></html>"
-    
+
     with open(filename, 'w') as f:
         f.write(html)
-    
+
     print(f"HTML report saved to: {filename}")
+
+def get_ai_remediation(findings):
+    # Use AWS Bedrock to generate plain English remediation advice
+    bedrock = boto3.client('bedrock-runtime', region_name='eu-west-2')
+    
+    # Build a summary of issues to send to the model
+    issues_summary = []
+    for finding in findings:
+        if finding['Issues']:
+            issues_summary.append(f"User {finding['User']}: {', '.join(finding['Issues'])}")
+    
+    if not issues_summary:
+        return "No issues found - account looks clean."
+    
+    prompt = f"""You are a cloud security engineer reviewing an AWS IAM audit report.
+These issues were found:
+
+{chr(10).join(issues_summary)}
+
+Give concise, practical remediation steps for each issue. Be direct and specific."""
+
+    response = bedrock.invoke_model(
+        modelId='eu.anthropic.claude-haiku-4-5-20251001-v1:0',
+        body=json.dumps({
+            'anthropic_version': 'bedrock-2023-05-31',
+            'max_tokens': 1000,
+            'messages': [{'role': 'user', 'content': prompt}]
+        })
+    )
+    
+    result = json.loads(response['body'].read())
+    import re
+    import markdown
+    clean_text = re.sub(r'[^\x00-\x7F]+', '', result['content'][0]['text'])
+    return markdown.markdown(clean_text)
 
 if __name__ == "__main__":
     findings = audit_users()
+    ai_advice = get_ai_remediation(findings)
+    print("\n=== AI Remediation Advice ===")
+    print(ai_advice)
     generate_report(findings)
-    generate_html_report(findings)
+    generate_html_report(findings, ai_advice)
