@@ -38,11 +38,20 @@ would want.
 
 ## How to run it
 
-Clone the repo, configure AWS CLI with your credentials, then:
+Clone the repo and configure AWS CLI with your credentials.
 
-pip install boto3
-python3 iam_auditor.py
+Then install the dependencies:
 
+    pip install boto3
+
+Run the audit:
+
+    python3 iam_auditor.py
+
+The tool will check all IAM users in your account and generate 
+both a JSON report and an HTML report in the same directory.
+The HTML report includes AI-powered remediation advice for 
+any issues found.
 ## What's next
 
 - Planning to add checks for unused IAM roles, overly permissive 
