@@ -1,0 +1,61 @@
+
+<html>
+<head>
+    <title>IAM Audit Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #232f3e; }
+        .summary { background: #f0f0f0; padding: 15px; border-radius: 5px; }
+        .user { border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 5px; }
+        .issue { color: #d13212; font-weight: bold; }
+        .clean { color: #1d8348; }
+        .ai-box { background: #eaf4fb; border-left: 4px solid #2874a6; padding: 15px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>IAM Security Audit Report</h1>
+    <div class="summary">
+        <p>Date: 2026-09-29 17:22:22</p>
+        <p>Users checked: 1</p>
+        <p>Total issues found: 2</p>
+    </div>
+
+    <div class="user">
+        <h3>test-user-1</h3>
+        <p>MFA Enabled: False</p>
+        <p>Admin Access: True</p>
+<p class="issue">ISSUE: No MFA enabled</p>
+<p class="issue">ISSUE: Has AdministratorAccess policy</p>
+</div>
+
+    <div class="ai-box">
+        <h2>AI Remediation Advice</h2>
+        <pre># IAM Audit Remediation: test-user-1
+
+## Issue 1: No MFA Enabled
+**Risk Level:** CRITICAL
+
+**Remediation Steps:**
+1. Request user enable MFA immediately (virtual authenticator app or hardware key preferred)
+2. In AWS Console → IAM → Users → test-user-1 → Security credentials → MFA devices → Assign MFA device
+3. User completes MFA setup and verifies with test codes
+4. Document completion date
+
+## Issue 2: AdministratorAccess Policy
+**Risk Level:** CRITICAL
+
+**Remediation Steps:**
+1. Determine minimum permissions actually required for this user's role
+2. Remove AdministratorAccess: IAM → Users → test-user-1 → Remove policy
+3. Attach least-privilege custom policy or appropriate managed policy instead
+4. If user genuinely needs admin access:
+   - Require MFA enforcement via policy condition: `"Bool": {"aws:MultiFactorAuthPresent": "true"}`
+   - Consider temporary elevation via role assumption instead of permanent access
+5. Document justification and approval
+
+## Immediate Actions (Priority Order)
+1. ✋ **STOP** — Enforce MFA before next login if possible
+2. ✂️ **REDUCE** — Remove AdministratorAccess within 24 hours
+3. ✅ **VERIFY** — Re-audit and document completion</pre>
+    </div>
+</body></html>

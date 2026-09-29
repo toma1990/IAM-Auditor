@@ -1,0 +1,54 @@
+
+<html>
+<head>
+    <title>IAM Audit Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #232f3e; }
+        .summary { background: #f0f0f0; padding: 15px; border-radius: 5px; }
+        .user { border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 5px; }
+        .issue { color: #d13212; font-weight: bold; }
+        .clean { color: #1d8348; }
+        .ai-box { background: #eaf4fb; border-left: 4px solid #2874a6; padding: 15px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>IAM Security Audit Report</h1>
+    <div class="summary">
+        <p>Date: 2026-09-29 17:49:54</p>
+        <p>Users checked: 1</p>
+        <p>Total issues found: 2</p>
+    </div>
+
+    <div class="user">
+        <h3>test-user-1</h3>
+        <p>MFA Enabled: False</p>
+        <p>Admin Access: True</p>
+<p class="issue">ISSUE: No MFA enabled</p>
+<p class="issue">ISSUE: Has AdministratorAccess policy</p>
+</div>
+
+    <div class="ai-box">
+        <h2>AI Remediation Advice</h2>
+        <div><h1>Remediation for test-user-1</h1>
+<h2>Issue 1: No MFA Enabled</h2>
+<p><strong>Risk:</strong> Account takeover via compromised credentials</p>
+<p><strong>Steps:</strong>
+1. Require the user to enable MFA immediately (virtual authenticator or hardware key)
+2. In IAM console: Select user  Security credentials  Assign MFA device
+3. Enforce MFA for all console logins via password policy or SCP</p>
+<h2>Issue 2: AdministratorAccess Policy</h2>
+<p><strong>Risk:</strong> Excessive privileges; violates least privilege principle</p>
+<p><strong>Steps:</strong>
+1. Determine user's actual job function/required permissions
+2. Create or assign a role-based policy matching only those permissions
+3. Remove AdministratorAccess policy attachment
+4. Test access immediately to confirm required functions work</p>
+<p><strong>If admin access is genuinely required:</strong>
+- Restrict to temporary elevated access via AWS SSO/role assumption
+- Require MFA for privilege elevation
+- Enable CloudTrail logging for all admin actions</p>
+<hr />
+<p><strong>Priority:</strong> Address both issues <strong>immediately</strong>  this user currently has unrestricted admin access with no multi-factor authentication.</p></div>
+    </div>
+</body></html>

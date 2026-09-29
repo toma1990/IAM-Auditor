@@ -1,0 +1,57 @@
+
+<html>
+<head>
+    <title>IAM Audit Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #232f3e; }
+        .summary { background: #f0f0f0; padding: 15px; border-radius: 5px; }
+        .user { border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 5px; }
+        .issue { color: #d13212; font-weight: bold; }
+        .clean { color: #1d8348; }
+        .ai-box { background: #eaf4fb; border-left: 4px solid #2874a6; padding: 15px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>IAM Security Audit Report</h1>
+    <div class="summary">
+        <p>Date: 2026-09-29 17:43:38</p>
+        <p>Users checked: 1</p>
+        <p>Total issues found: 2</p>
+    </div>
+
+    <div class="user">
+        <h3>test-user-1</h3>
+        <p>MFA Enabled: False</p>
+        <p>Admin Access: True</p>
+<p class="issue">ISSUE: No MFA enabled</p>
+<p class="issue">ISSUE: Has AdministratorAccess policy</p>
+</div>
+
+    <div class="ai-box">
+        <h2>AI Remediation Advice</h2>
+        <pre># IAM Audit Remediation - test-user-1
+
+## Issue 1: No MFA Enabled
+**Risk:** Account takeover via credential compromise
+
+**Remediation:**
+1. Notify user to enable MFA immediately
+2. User logs into AWS Console  Security Credentials  MFA devices
+3. Choose MFA device type (recommend hardware key or authenticator app)
+4. Complete setup and test
+5. Enforce via IAM policy: Attach `IAMUserMFADeviceManagement` policy requiring MFA for sensitive actions
+
+## Issue 2: AdministratorAccess Policy
+**Risk:** Excessive privilege; violates principle of least privilege
+
+**Remediation:**
+1. **Determine actual job function** - What does this user actually need to do?
+2. **Remove AdministratorAccess** - Detach policy immediately
+3. **Create/assign role-based policy** with minimum required permissions (e.g., `PowerUserAccess` + specific service permissions)
+4. **Use permission boundaries** - Apply a boundary limiting maximum permissions
+5. **Document justification** - If full admin access is genuinely required, document approval and implement time-based reviews (quarterly)
+
+**Quick win:** If this is a human user, replace with `PowerUserAccess` + specific service restrictions rather than full admin.</pre>
+    </div>
+</body></html>
