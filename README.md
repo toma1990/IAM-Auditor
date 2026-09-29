@@ -24,6 +24,18 @@ IAM misconfigurations are consistently in the top causes of AWS breaches. I want
 - boto3 (AWS SDK)
 - AWS IAM
 
+## AI-Powered Remediation
+
+Integrates with AWS Bedrock (Claude Haiku) to automatically generate 
+plain English remediation advice for every issue found. Instead of 
+just flagging problems, the tool tells you exactly how to fix them 
+and in what order of priority.
+
+The most interesting part to build - feeding structured 
+audit findings into an LLM and getting back actionable security 
+guidance felt like a genuinely useful thing a real security team 
+would want.
+
 ## How to run it
 
 Clone the repo, configure AWS CLI with your credentials, then:
